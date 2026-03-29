@@ -14,16 +14,16 @@ BASE_DIR = os.path.dirname(__file__)
 DATABASE = os.path.join(BASE_DIR, "garage_portal.db")
 DVLA_API_URL = "https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles"
 DVLA_API_KEY = os.getenv("DVLA_API_KEY", "")
-LABOUR_RATE = float(os.getenv("LABOUR_RATE", "78"))
+LABOUR_RATE = float(os.getenv("LABOUR_RATE", "40"))
 VAT_RATE = float(os.getenv("VAT_RATE", "0.20"))
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "change-me")
-COMPANY_NAME = os.getenv("COMPANY_NAME", "Your Garage")
-COMPANY_PHONE = os.getenv("COMPANY_PHONE", "01234 567890")
-COMPANY_EMAIL = os.getenv("COMPANY_EMAIL", "bookings@example.com")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Samwasbornin20102.")
+COMPANY_NAME = os.getenv("COMPANY_NAME", "MGM Prestige")
+COMPANY_PHONE = os.getenv("COMPANY_PHONE", "07984 265141")
+COMPANY_EMAIL = os.getenv("COMPANY_EMAIL", "ben@mgmprestige.co.uk")
 DEFAULT_MAKE = "GENERIC"
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-this")
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "I LOVE LUCY")
 
 
 @dataclass
