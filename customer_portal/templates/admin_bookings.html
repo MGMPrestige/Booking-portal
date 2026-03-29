@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Booking requests</h2>
+  <p class="muted">Newest first. This basic admin screen is intended for your internal use only.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Created</th><th>Quote ref</th><th>Customer</th><th>Contact</th><th>Vehicle</th><th>Job</th><th>Total</th><th>Preferred slot</th><th>Notes</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td>{{ b['created_at'] }}</td>
+          <td>{{ b['quote_ref'] }}</td>
+          <td>{{ b['customer_name'] }}</td>
+          <td>{{ b['customer_email'] }}<br>{{ b['customer_phone'] }}</td>
+          <td>{{ b['registration'] }}<br>{{ b['vehicle_make'] }} {{ b['vehicle_model'] or '' }}</td>
+          <td>{{ b['job_label'] }}</td>
+          <td>{{ b['quoted_total']|money }}</td>
+          <td>{{ b['preferred_date'] or '—' }} {{ b['preferred_time'] or '' }}</td>
+          <td>{{ b['notes'] or '—' }}</td>
+          <td>{{ b['status'] }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="10">No bookings yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

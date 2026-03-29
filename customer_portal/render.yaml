@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: garage-customer-portal
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DVLA_API_KEY
+        sync: false
+      - key: LABOUR_RATE
+        value: "78"
+      - key: VAT_RATE
+        value: "0.20"
+      - key: COMPANY_NAME
+        value: "Your Garage"
+      - key: COMPANY_PHONE
+        value: "01234 567890"
+      - key: COMPANY_EMAIL
+        value: "bookings@example.com"

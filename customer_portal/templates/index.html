@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-grid">
+  <div class="card">
+    <h2>Get a quote</h2>
+    <p class="muted">Enter a UK registration, confirm the vehicle, and get an instant estimate.</p>
+    <div class="notice"><strong>Pricing basis:</strong> {{ pricing_basis }}. This version is ready for customer bookings and can later be upgraded to live supplier pricing.</div>
+    <div>
+      <span class="tag">Services</span><span class="tag">Brakes</span><span class="tag">Timing belt</span><span class="tag">Battery</span><span class="tag">Suspension</span><span class="tag">A/C</span>
+    </div>
+    <form method="post">
+      <div class="grid">
+        <div class="col-4"><label>Registration</label><input name="registration" value="{{ entered_reg }}" placeholder="AB12CDE"></div>
+        <div class="col-8"><label>Service or repair</label><select name="job_code">{% for code,label in services %}<option value="{{ code }}" {% if code==selected_job %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+        <div class="col-12"><button type="submit">Verify vehicle and build quote</button></div>
+      </div>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Why customers can use this</h3>
+    <div class="kpi" style="margin-bottom:10px"><strong>Vehicle check first</strong><br><span class="muted">Shows make, fuel, year and engine size before booking.</span></div>
+    <div class="kpi" style="margin-bottom:10px"><strong>Instant price</strong><br><span class="muted">Parts, labour and VAT all visible on one screen.</span></div>
+    <div class="kpi"><strong>Booking capture</strong><br><span class="muted">Customer details and preferred appointment go straight into the portal database.</span></div>
+  </div>
+</div>
+
+{% if error %}<div class="card flash">{{ error }}</div>{% endif %}
+
+{% if vehicle %}
+<div class="card">
+  <h2>Vehicle verification</h2>
+  {% if vehicle._notice %}<div class="notice">{{ vehicle._notice }}</div>{% endif %}
+  <div class="grid">
+    <div class="col-3"><div class="kpi"><strong>Registration</strong><br>{{ vehicle.registrationNumber }}</div></div>
+    <div class="col-3"><div class="kpi"><strong>Make</strong><br>{{ vehicle.make or '—' }}</div></div>
+    <div class="col-3"><div class="kpi"><strong>Model</strong><br>{{ vehicle.model or '—' }}</div></div>
+    <div class="col-3"><div class="kpi"><strong>Fuel</strong><br>{{ vehicle.fuelType or '—' }}</div></div>
+    <div class="col-3"><div class="kpi"><strong>Year</strong><br>{{ vehicle.yearOfManufacture or '—' }}</div></div>
+    <div class="col-3"><div class="kpi"><strong>Engine capacity</strong><br>{{ vehicle.engineCapacity or '—' }} cc</div></div>
+    <div class="col-3"><div class="kpi"><strong>Estimated oil qty</strong><br>{{ totals.oil_litres }} L</div></div>
+    <div class="col-3"><div class="kpi"><strong>Tax / MOT</strong><br>{{ vehicle.taxStatus or '—' }} / {{ vehicle.motStatus or '—' }}</div></div>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="col-7">
+    <div class="card">
+      <h2>Parts estimate for {{ job_label }}</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>SKU</th><th>Part</th><th>Qty</th><th>Source</th><th>Unit price</th><th>Total</th></tr></thead>
+          <tbody>
+            {% for part in parts %}
+            <tr>
+              <td>{{ part.sku }}</td>
+              <td>{{ part.name }}</td>
+              <td>{{ part.quantity|qty }}</td>
+              <td>{{ part.source }}</td>
+              <td>{{ part.unit_price|money }}</td>
+              <td>{{ part.total|money }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Quote summary</h2>
+      <table class="summary">
+        <tr><th>Quote reference</th><td>{{ quote_ref }}</td></tr>
+        <tr><th>Parts total</th><td>{{ totals.parts_total|money }}</td></tr>
+        <tr><th>Labour</th><td>{{ totals.labour_hours }} h × {{ totals.labour_rate|money }} = {{ totals.labour_total|money }}</td></tr>
+        <tr><th>Subtotal ex VAT</th><td>{{ totals.subtotal|money }}</td></tr>
+        <tr><th>VAT</th><td>{{ totals.vat|money }}</td></tr>
+        <tr><th>Estimated customer price</th><td><strong>{{ totals.grand_total|money }}</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-5">
+    <div class="card">
+      <h2>Book this job</h2>
+      <p class="muted">Customers can send a booking request against this exact quote.</p>
+      <form method="post" action="{{ url_for('book') }}">
+        <input type="hidden" name="registration" value="{{ vehicle.registrationNumber }}">
+        <input type="hidden" name="job_code" value="{{ selected_job }}">
+        <input type="hidden" name="quote_ref" value="{{ quote_ref }}">
+        <div class="grid">
+          <div class="col-12"><label>Full name</label><input name="customer_name" required></div>
+          <div class="col-12"><label>Email</label><input name="customer_email" type="email" required></div>
+          <div class="col-12"><label>Phone</label><input name="customer_phone" required></div>
+          <div class="col-6"><label>Preferred date</label><input name="preferred_date" type="date"></div>
+          <div class="col-6"><label>Preferred time</label><select name="preferred_time"><option value="">Any time</option><option>Morning</option><option>Afternoon</option><option>After work</option></select></div>
+          <div class="col-12"><label>Notes</label><textarea name="notes" placeholder="Any warning lights, noises, or parts already supplied?"></textarea></div>
+          <div class="col-12"><button type="submit">Send booking request</button></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

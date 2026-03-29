@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="success"><strong>Booking request received.</strong> Your team can now review this in the admin screen.</div>
+  <h2>Thanks {{ customer_name }}</h2>
+  <table class="summary">
+    <tr><th>Quote reference</th><td>{{ quote_ref }}</td></tr>
+    <tr><th>Registration</th><td>{{ registration }}</td></tr>
+    <tr><th>Job</th><td>{{ job_label }}</td></tr>
+    <tr><th>Estimated price</th><td>{{ quoted_total|money }}</td></tr>
+    <tr><th>Preferred slot</th><td>{{ preferred_date or 'Not given' }} {{ preferred_time or '' }}</td></tr>
+  </table>
+  <div class="cta" style="margin-top:16px">
+    <a href="{{ url_for('home') }}">Build another quote</a>
+  </div>
+</div>
+{% endblock %}
